@@ -1,5 +1,7 @@
 import 'package:argon_flutter/model/product.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:whatsapp_unilink/whatsapp_unilink.dart';
 //import 'package:flutter_launch/flutter_launch.dart';
 
 class DetalleScreen extends StatefulWidget {
@@ -14,8 +16,6 @@ class DetalleScreen extends StatefulWidget {
 }
 
 class _DetalleScreen extends State<DetalleScreen> {
-
-
   Size size;
 
   @override
@@ -33,6 +33,13 @@ class _DetalleScreen extends State<DetalleScreen> {
       print("Whatsapp não instalado");
     }
   }*/
+  launchWhatsApp(String phone, String message) async {
+    final link = WhatsAppUnilink(
+      phoneNumber: phone,
+      text: message,
+    );
+    await launch('$link');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +64,13 @@ class _DetalleScreen extends State<DetalleScreen> {
                     children: <Widget>[
                       Text(
                         'DETALLES DE PEDIDO',
+                        style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.blue),
+                      ),
+                      SizedBox(
+                        height: 12.0,
                       ),
                       Divider(),
                       Text(
@@ -67,21 +81,31 @@ class _DetalleScreen extends State<DetalleScreen> {
                           letterSpacing: 1.0,
                         ),
                       ),
-                      Image.network(
-
-                        widget.data.imagen,
-                        width: 200,
+                      Container(
+                        width: size.width,
+                        alignment: Alignment.center,
+                        child: Image.network(
+                          widget.data.imagen,
+                          width: 200,
+                        ),
                       ),
                       SizedBox(
                         height: 12.0,
                       ),
                       Text(
                         widget.data.name,
-                        style: TextStyle(fontSize: 20.0, color: Colors.black54),
+                        style: TextStyle(
+                          fontSize: 23.0,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.0,
+                        ),
                       ),
                       Text(
                         widget.data.description,
                         style: TextStyle(fontSize: 18, color: Colors.grey),
+                      ),
+                      SizedBox(
+                        height: 30,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -93,11 +117,16 @@ class _DetalleScreen extends State<DetalleScreen> {
                               children: <Widget>[
                                 Text(
                                   "Whatsapp",
+                                  style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green),
                                 )
                               ],
                             ),
-                            onPressed: () {
-                              //whatsAppOpen();
+                            onPressed: () async {
+                              await launchWhatsApp("+51996928026",
+                                  "Hola  tengo un pedido con usted, quiero lo siguiente: ${widget.data.name}");
                             },
                           )),
                           RaisedButton(
